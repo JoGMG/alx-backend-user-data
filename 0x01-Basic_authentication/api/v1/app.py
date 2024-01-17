@@ -23,7 +23,7 @@ elif AUTH_TYPE == 'basic_auth':
 
 
 @app.before_request
-def before_req():
+def filter_request():
     """
     Filters each request before response.
     """
@@ -59,7 +59,7 @@ def unathorized(error) -> str:
 @app.errorhandler(403)
 def forbidden(error) -> str:
     """
-    Forbidden handler.
+    Forbidden request handler.
     """
     return jsonify({"error": "Forbidden"}), 403
 

@@ -12,3 +12,8 @@ print(a.require_auth("/api/v1/status/", ["/api/v1/status/"]))
 print(a.require_auth("/api/v1/status", ["/api/v1/status/"]))
 print(a.require_auth("/api/v1/users", ["/api/v1/status/"]))
 print(a.require_auth("/api/v1/users", ["/api/v1/status/", "/api/v1/stats"]))
+print(a.require_auth("/api/v1/users", ["/api/v1/stat*"]))  # True
+print(a.require_auth("/api/v1/status", ["/api/v1/stat*"]))  # False
+print(a.require_auth("/api/v1/stats", ["/api/v1/stat*"]))  # False
+print(a.require_auth("/api/v1/us/", ["/api/v1/us*"]))  # False
+print(a.require_auth("/api/v1/uas", ["/api/v1/us*"]))  # True
