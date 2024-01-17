@@ -9,3 +9,20 @@ class BasicAuth(Auth):
     """
     Basic Authentication System Manager.
     """
+    def extract_base64_authorization_header(
+            self, authorization_header: str) -> str:
+        """
+        Returns the Base64 part of `authorization header` for a
+        Basic Authentication.
+
+        Arguments:
+            - `authorization_header`: HTTP request authorization
+            header encoded in base64 format.
+        """
+        if authorization_header is None:
+            return None
+        if not isinstance(authorization_header, str):
+            return None
+        if not authorization_header.startswith('Basic '):
+            return None
+        return authorization_header[6:]
