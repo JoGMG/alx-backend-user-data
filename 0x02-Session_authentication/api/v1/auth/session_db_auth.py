@@ -42,10 +42,13 @@ class SessionDBAuth(SessionExpAuth):
         duration = super().user_id_for_session_id(session_id)
         if duration is None:
             return None
-        user_session = UserSession.search({"session_id": session_id})
-        if not user_session:
+        try:
+            user_session = UserSession.search({"session_id": session_id})
+            for user in user_session:
+                return user.user_id
+        except Exception:
             return None
-        return user_session[0].user_id
+        return None
 
     def destroy_session(self, request=None):
         """
@@ -60,9 +63,11 @@ class SessionDBAuth(SessionExpAuth):
         session_id = self.session_cookie(request)
         if not session_id:
             return False
-        user_session = UserSession.search({"session_id": session_id})
-        if not user_session:
+        try:
+            user_session = UserSession.search({"session_id": session_id})
+            for user in user_session:
+                user.remove()
+            del self.user_id_by_session_id[session_id]
+            return True
+        except Exception:
             return False
-        user_session[0].remove()
-        del self.user_id_by_session_id[session_id]
-        return True
