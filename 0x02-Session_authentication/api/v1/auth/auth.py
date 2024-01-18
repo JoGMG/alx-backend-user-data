@@ -60,6 +60,10 @@ class Auth:
 
     def session_cookie(self, request=None):
         """
+        Returns a cookie value from `request`.
+
+        Arguments:
+            - `request`: HTTP request.
         """
         if request is None:
             return None
