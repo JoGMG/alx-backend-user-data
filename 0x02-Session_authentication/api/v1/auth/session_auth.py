@@ -33,7 +33,7 @@ class SessionAuth(Auth):
         Returns the user ID for a `session_id`.
 
         Arguments:
-            - `session_id`: A random UUID.
+            - `session_id`: User Authentication Session ID.
         """
         if session_id is None:
             return None
