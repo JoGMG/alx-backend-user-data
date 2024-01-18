@@ -7,10 +7,12 @@ from flask import request, jsonify, abort
 from models.user import User
 import os
 
+
 @app_views.route('/auth_session/login', methods=['POST'], strict_slashes=False)
 def auth_session_login():
-    """
-    Handles user authentication 
+    """ POST /api/v1/auth_session/login
+    Return:
+      - User object JSON represented
     """
     user_email = request.form.get('email')
     user_pwd = request.form.get('password')
