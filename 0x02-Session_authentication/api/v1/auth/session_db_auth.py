@@ -40,23 +40,22 @@ class SessionDBAuth(SessionExpAuth):
         """
         if session_id is None:
             return None
-        try:
-            user_session = UserSession.search({"session_id": session_id})
-            if self.session_duration <= 0:
-                return user_session[0].user_id
-            session_dictionary = self.user_id_by_session_id.get(
-                session_id, None)
-            if session_dictionary is None:
-                return None
-            created_at = session_dictionary.get("created_at", None)
-            if created_at is None:
-                return None
-            duration = created_at + timedelta(seconds=self.session_duration)
-            if duration < datetime.now():
-                return None
-            return user_session[0].user_id
-        except Exception:
+        user_session = UserSession.search({"session_id": session_id})
+        if user_session is None:
             return None
+        if self.session_duration <= 0:
+            return user_session[0].user_id
+        session_dictionary = self.user_id_by_session_id.get(
+            session_id, None)
+        if session_dictionary is None:
+            return None
+        created_at = session_dictionary.get("created_at", None)
+        if created_at is None:
+            return None
+        duration = created_at + timedelta(seconds=self.session_duration)
+        if duration < datetime.now():
+            return None
+        return user_session[0].user_id
 
     def destroy_session(self, request=None):
         """
