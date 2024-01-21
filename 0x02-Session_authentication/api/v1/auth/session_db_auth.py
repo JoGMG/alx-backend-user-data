@@ -44,7 +44,8 @@ class SessionDBAuth(SessionExpAuth):
             user_session = UserSession.search({"session_id": session_id})
             if self.session_duration <= 0:
                 return user_session[0].user_id
-            session_dictionary = self.user_id_by_session_id.get(session_id, None)
+            session_dictionary = self.user_id_by_session_id.get(
+                session_id, None)
             if session_dictionary is None:
                 return None
             created_at = session_dictionary.get("created_at", None)
