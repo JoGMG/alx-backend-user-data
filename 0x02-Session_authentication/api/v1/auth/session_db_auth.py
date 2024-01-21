@@ -4,6 +4,7 @@ Database Session Authentication Management.
 """
 from api.v1.auth.session_exp_auth import SessionExpAuth
 from models.user_session import UserSession
+from datetime import datetime, timedelta
 
 
 class SessionDBAuth(SessionExpAuth):
@@ -39,16 +40,23 @@ class SessionDBAuth(SessionExpAuth):
         """
         if session_id is None:
             return None
-        duration = super().user_id_for_session_id(session_id)
-        if duration is None:
-            return None
         try:
             user_session = UserSession.search({"session_id": session_id})
-            for user in user_session:
-                return user.user_id
+            if self.session_duration <= 0:
+                return user_session[0].user_id
+            session_dictionary = self.user_id_by_session_id.get(
+                session_id, None)
+            if session_dictionary is None:
+                return None
+            created_at = session_dictionary.get("created_at", None)
+            if created_at is None:
+                return None
+            duration = created_at + timedelta(seconds=self.session_duration)
+            if duration < datetime.now():
+                return None
+            return user_session[0].user_id
         except Exception:
             return None
-        return None
 
     def destroy_session(self, request=None):
         """
@@ -65,8 +73,7 @@ class SessionDBAuth(SessionExpAuth):
             return False
         try:
             user_session = UserSession.search({"session_id": session_id})
-            for user in user_session:
-                user.remove()
+            user_session[0].remove()
             del self.user_id_by_session_id[session_id]
             return True
         except Exception:
