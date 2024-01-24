@@ -97,7 +97,7 @@ class Auth:
 
     def destroy_session(self, user_id: str) -> None:
         """
-        Updates user object's session_id to None and returns it.
+        Updates user object's `session_id` to None and returns it.
 
         Arguments:
             - `user_id`: User object id.
@@ -107,7 +107,7 @@ class Auth:
 
     def get_reset_password_token(self, email: str) -> str:
         """
-        Updates user object's reset_token and returns it.
+        Updates user object's `reset_token` and returns it.
 
         Arguments:
             - `email`: User object email.
@@ -119,3 +119,21 @@ class Auth:
         reset_token = _generate_uuid()
         self._db.update_user(user.id, reset_token=reset_token)
         return reset_token
+
+    def update_password(self, reset_token: str, password: str) -> None:
+        """
+        Updates user object's `password` with the new hashed password
+        and sets user object's `reset_token` to None.
+
+        Argument:
+            - `reset_token`: User object's reset_token.
+            - `password`: password to update user object with.
+        """
+        try:
+            user = self._db.find_user_by(reset_token=reset_token)
+        except Exception:
+            raise ValueError
+        hashed_password = _hash_password(password)
+        self._db.update_user(
+            user.id, hashed_password=hashed_password, reset_token=None)
+        return None
