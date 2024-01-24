@@ -4,6 +4,7 @@ Auth Module.
 """
 import bcrypt
 from db import DB
+from user import User
 
 
 def _hash_password(password: str) -> bytes:
@@ -25,7 +26,7 @@ class Auth:
     def __init__(self):
         self._db = DB()
 
-    def register_user(self, email: str, password: str):
+    def register_user(self, email: str, password: str) -> User:
         """
         Saves user object to DB and returns it if it exists.
 
@@ -37,6 +38,6 @@ class Auth:
             self._db.find_user_by(email=email)
         except Exception:
             hashed_password = _hash_password(password)
-            saved_user = self._db.add_user(email, hashed_password)
-            return saved_user
+            user = self._db.add_user(email, hashed_password)
+            return user
         raise ValueError('User {} already exists'.format(email))
