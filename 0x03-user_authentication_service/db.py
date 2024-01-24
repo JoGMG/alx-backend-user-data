@@ -38,7 +38,7 @@ class DB:
 
         Arguments:
             - `email`: user's email.
-            - `hash_password`: user's hashed password.
+            - `hashed_password`: user's password (hashed).
         """
         user = User(email=email, hashed_password=hashed_password)
         self._session.add(user)
